@@ -83,7 +83,7 @@ render_page_start(
                   data-check="<?= h(json_encode($task['check'], JSON_UNESCAPED_UNICODE)) ?>"
                   data-preview="<?= h($task['preview'] ?? '') ?>">
                 <input type="hidden" name="task_id" value="<?= h($task['id']) ?>">
-                <textarea name="answer" rows="3" spellcheck="false" autocomplete="off"
+                <textarea name="answer" rows="<?= (int) ($task['rows'] ?? 3) ?>" spellcheck="false" autocomplete="off"
                           placeholder="<?= h($task['placeholder'] ?? '') ?>"><?= h($old_answers[$task['id']] ?? '') ?></textarea>
                 <div class="task-actions">
                     <button type="submit" class="btn">Prüfen</button>
@@ -107,4 +107,4 @@ render_page_start(
         </article>
     <?php endforeach; ?>
 </main>
-<?php render_page_end('../', ['lesson.js']); ?>
+<?php render_page_end('../', ['editor.js', 'lesson.js']); ?>

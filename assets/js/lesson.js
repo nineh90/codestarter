@@ -34,10 +34,57 @@ function checkAnswer(check, answer) {
     return false;
 }
 
+// Was die Vorschau pro Modus im Sandkasten erlauben muss:
+// JS-Aufgaben brauchen Scripte, der "magische Knopf" auch alert()-Fenster.
+const SANDBOX_RULES = {
+    'html':     '',
+    'css':      '',
+    'css-full': '',
+    'js':       'allow-scripts',
+    'html-js':  'allow-scripts allow-modals',
+};
+
+// Baut eine Mini-Seite, die JS-Code AUSFÜHRT und alle console.log-Ausgaben
+// (und Fehler!) sichtbar macht — wie eine kleine eingebaute Konsole.
+function buildJsRunner(code) {
+    // Ein </script> im Code würde unser Script-Tag kaputt machen — entschärfen
+    const safeCode = code.replace(/<\/script/gi, '<\\/script');
+
+    return `<style>
+        body { font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+               background: #14161f; color: #3ddc84; margin: 0; padding: 12px;
+               font-size: 14px; line-height: 1.5; }
+        .err { color: #ff6b6b; }
+        .empty { color: #555c70; }
+    </style>
+    <div id="out"></div>
+    <script>
+    const out = document.getElementById('out');
+    function print(text, cls) {
+        const line = document.createElement('div');
+        if (cls) line.className = cls;
+        line.textContent = text;
+        out.appendChild(line);
+    }
+    // console.log umleiten, damit die Ausgabe HIER landet statt unsichtbar
+    console.log = (...args) => print(args.map(value =>
+        typeof value === 'object' ? JSON.stringify(value) : String(value)
+    ).join(' '));
+    try {
+        ${safeCode}
+    } catch (error) {
+        print('⚠️ ' + error.name + ': ' + error.message + ' — kein Stress, Fehler gehören dazu!', 'err');
+    }
+    if (out.childNodes.length === 0) {
+        print('(noch keine Ausgabe — nutze console.log)', 'empty');
+    }
+    </${'script'}>`;
+}
+
 // Baut den Inhalt für die Live-Vorschau, je nach Aufgaben-Typ
 function buildPreview(mode, answer) {
-    if (mode === 'html') {
-        // Die Antwort IST der HTML-Code
+    if (mode === 'html' || mode === 'html-js') {
+        // Die Antwort IST der HTML-Code (bei html-js dürfen Scripte laufen)
         return PREVIEW_BASE + answer;
     }
     if (mode === 'css') {
@@ -51,6 +98,10 @@ function buildPreview(mode, answer) {
         return PREVIEW_BASE
             + '<style>' + answer + '</style>'
             + '<div class="demo">Fahr mit der Maus über mich! 🖱️</div>';
+    }
+    if (mode === 'js') {
+        // Die Antwort ist JavaScript — wird ausgeführt, Ausgabe wie in einer Konsole
+        return buildJsRunner(answer);
     }
     return '';
 }
@@ -121,6 +172,14 @@ document.querySelectorAll('.task-form').forEach(form => {
 
     // ---- Live-Vorschau: bei jeder Eingabe aktualisieren ----
     if (previewMode) {
+        // Sandkasten-Rechte passend zum Aufgaben-Typ setzen
+        previewFrame.setAttribute('sandbox', SANDBOX_RULES[previewMode] ?? '');
+
+        // Bei großen Aufgaben (Challenges) auch eine größere Vorschau
+        if (textarea.rows >= 6) {
+            previewFrame.classList.add('tall');
+        }
+
         const updatePreview = () => {
             previewFrame.srcdoc = buildPreview(previewMode, textarea.value);
         };

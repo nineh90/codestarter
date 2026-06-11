@@ -17,7 +17,7 @@ define('USER_COOKIE', 'lab_user');
 define('COOKIE_LIFETIME', 60 * 60 * 24 * 365); // 1 Jahr
 
 // Welche Lektionen es gibt (Reihenfolge = Anzeige auf dem Dashboard)
-const LESSON_IDS = ['html-basics', 'css-basics'];
+const LESSON_IDS = ['html-basics', 'css-basics', 'js-basics', 'mini-challenges'];
 
 // Level-System: ab wie viel XP welches Level erreicht ist.
 // Die ersten Level kommen schnell (Motivation!), später wird es langsamer.

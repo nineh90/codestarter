@@ -67,6 +67,15 @@ render_page_start('Dashboard', '', $total_xp);
                 <a class="btn" href="lessons/<?= h($lesson['id']) ?>.php"><?= h($button_text) ?></a>
             </article>
         <?php endforeach; ?>
+
+        <!-- Die Spielwiese ist keine Lektion — freies Coden ohne Punkte -->
+        <article class="lesson-card">
+            <div class="lesson-card-icon">🧪</div>
+            <h2>Spielwiese</h2>
+            <p>Kein Plan, keine Punkte — einfach drauflos coden und sofort sehen, was passiert.</p>
+            <p class="lesson-card-meta">Freies Experimentieren</p>
+            <a class="btn" href="playground.php">Öffnen</a>
+        </article>
     </section>
 
 </main>

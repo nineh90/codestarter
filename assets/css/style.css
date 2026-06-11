@@ -320,7 +320,8 @@ a {
 }
 
 /* ---------- Eingabe & Formular ---------- */
-.task-form textarea {
+.task-form textarea,
+.playground-grid textarea {
     width: 100%;
     background: var(--bg);
     color: var(--accent-2);
@@ -332,7 +333,8 @@ a {
     resize: vertical;
 }
 
-.task-form textarea:focus {
+.task-form textarea:focus,
+.playground-grid textarea:focus {
     outline: 2px solid var(--accent);
     border-color: transparent;
 }
@@ -404,6 +406,29 @@ a {
     border: 1px solid var(--card-soft);
     border-radius: 10px;
     background: #ffffff;
+}
+
+/* größere Vorschau bei großen Aufgaben (Challenges) */
+.preview iframe.tall {
+    height: 320px;
+}
+
+/* ---------- Spielwiese ---------- */
+.playground-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.playground-grid .preview iframe {
+    height: 420px;
+}
+
+@media (max-width: 760px) {
+    .playground-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* ---------- Toast (Level-Up-Meldung) ---------- */
