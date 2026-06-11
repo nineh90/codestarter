@@ -1,0 +1,19 @@
+# Lokale SQLite-Datenbank (Jonas' Fortschritt) — gehört nicht ins Repo
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+
+# Lokale Konfiguration / Secrets (z. B. API-Key für den KI-Tutor später)
+config.local.php
+.env
+
+# Betriebssystem-Müll
+.DS_Store
+Thumbs.db
+
+# Editor-Verzeichnisse
+.vscode/
+.idea/
+
+# Logs
+*.log
