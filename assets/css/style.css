@@ -1,0 +1,448 @@
+/* =====================================================================
+   style.css — Globales Styling für Jonas Coding Lab
+   Dunkles Theme, Akzentfarben Lila + Cyan, mobil optimiert.
+   ===================================================================== */
+
+/* ---------- Farben & Grundwerte an einer Stelle ---------- */
+:root {
+    --bg: #0f1117;            /* Seitenhintergrund */
+    --card: #1e2130;          /* Karten / Boxen */
+    --card-soft: #262a3d;     /* etwas hellere Flächen (Eingaben etc.) */
+    --text: #e8e8f0;          /* normaler Text */
+    --text-dim: #9aa0b5;      /* gedimmter Text */
+    --accent: #7c6cf7;        /* Lila */
+    --accent-2: #00d4ff;      /* Cyan */
+    --ok: #3ddc84;            /* Erfolg */
+    --wrong: #ff6b6b;         /* Fehler */
+    --radius: 14px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+}
+
+a {
+    color: var(--accent-2);
+}
+
+.container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 16px 80px;
+}
+
+/* ---------- Topbar mit Logo und XP-Anzeige ---------- */
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 12px 16px;
+    background: rgba(15, 17, 23, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--card);
+}
+
+.logo {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text);
+    text-decoration: none;
+}
+
+.xp-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+}
+
+.level-label {
+    color: var(--accent-2);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.xp-label {
+    color: var(--text-dim);
+    white-space: nowrap;
+}
+
+/* kleine XP-Leiste in der Topbar */
+.xp-bar {
+    width: 90px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--bg);
+    overflow: hidden;
+}
+
+.xp-bar-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transition: width 0.6s ease;
+}
+
+/* ---------- Dashboard: Hero ---------- */
+.hero {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 28px;
+}
+
+.hero h1 {
+    margin: 0 0 8px;
+    font-size: 1.8rem;
+}
+
+.hero p {
+    margin: 0 0 16px;
+    color: var(--text-dim);
+}
+
+.hero strong {
+    color: var(--text);
+}
+
+.hero-bar {
+    height: 14px;
+    border-radius: 999px;
+    background: var(--bg);
+    overflow: hidden;
+}
+
+.hero-bar-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transition: width 0.6s ease;
+}
+
+/* ---------- Dashboard: Lektions-Karten ---------- */
+.lesson-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.lesson-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    padding: 24px;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.lesson-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+}
+
+.lesson-card.complete {
+    border-color: var(--ok);
+}
+
+.lesson-card-icon {
+    font-size: 2rem;
+}
+
+.lesson-card h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.lesson-card p {
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 0.92rem;
+    flex-grow: 1;
+}
+
+.lesson-card-meta {
+    font-size: 0.8rem !important;
+    flex-grow: 0 !important;
+}
+
+.card-bar {
+    height: 8px;
+    border-radius: 999px;
+    background: var(--bg);
+    overflow: hidden;
+}
+
+.card-bar-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+    display: inline-block;
+    align-self: flex-start;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: #0f1117;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 22px;
+    margin-top: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+/* ---------- Lektionsseite ---------- */
+.back-link {
+    display: inline-block;
+    color: var(--text-dim);
+    text-decoration: none;
+    margin-bottom: 16px;
+}
+
+.back-link:hover {
+    color: var(--text);
+}
+
+.lesson-head h1 {
+    margin: 0 0 8px;
+}
+
+.lesson-head p {
+    margin: 0 0 4px;
+    color: var(--text-dim);
+}
+
+.lesson-progress {
+    color: var(--accent-2) !important;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* ---------- Aufgaben-Karten ---------- */
+.task {
+    background: var(--card);
+    border-radius: var(--radius);
+    border-left: 4px solid var(--accent);
+    padding: 22px;
+    margin: 22px 0;
+}
+
+.task.done {
+    border-left-color: var(--ok);
+}
+
+.task-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.task-number {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.task.done .task-number {
+    background: var(--ok);
+    color: #0f1117;
+}
+
+.task-head h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    flex-grow: 1;
+}
+
+.xp-badge {
+    flex-shrink: 0;
+    background: var(--bg);
+    color: var(--accent-2);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.task.done .xp-badge {
+    color: var(--ok);
+}
+
+.theory {
+    color: var(--text-dim);
+    margin: 0 0 10px;
+}
+
+.instruction {
+    margin: 0 0 14px;
+    font-weight: 600;
+}
+
+/* ---------- Eingabe & Formular ---------- */
+.task-form textarea {
+    width: 100%;
+    background: var(--bg);
+    color: var(--accent-2);
+    font-family: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.95rem;
+    border: 1px solid var(--card-soft);
+    border-radius: 10px;
+    padding: 12px;
+    resize: vertical;
+}
+
+.task-form textarea:focus {
+    outline: 2px solid var(--accent);
+    border-color: transparent;
+}
+
+.task-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 10px;
+}
+
+.task-actions .btn {
+    margin-top: 0;
+}
+
+/* ---------- Tipp (aufklappbar) ---------- */
+.hint summary {
+    cursor: pointer;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    list-style: none;
+}
+
+.hint summary:hover {
+    color: var(--text);
+}
+
+.hint p {
+    margin: 8px 0 0;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+/* ---------- Feedback (richtig/falsch) ---------- */
+.feedback {
+    margin: 12px 0 0;
+    font-weight: 600;
+    min-height: 1.2em;
+}
+
+.feedback.ok {
+    color: var(--ok);
+}
+
+.feedback.wrong {
+    color: var(--wrong);
+}
+
+/* ---------- Live-Vorschau ---------- */
+.preview {
+    margin-top: 14px;
+}
+
+.preview-label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+}
+
+.preview iframe {
+    width: 100%;
+    height: 150px;
+    border: 1px solid var(--card-soft);
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+/* ---------- Toast (Level-Up-Meldung) ---------- */
+.toast {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 100;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: #0f1117;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ---------- Mobil ---------- */
+@media (max-width: 560px) {
+    .topbar {
+        justify-content: center;
+    }
+
+    .hero {
+        padding: 20px;
+    }
+
+    .task {
+        padding: 16px;
+    }
+
+    .task-actions {
+        flex-wrap: wrap;
+    }
+}
