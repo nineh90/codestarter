@@ -11,6 +11,7 @@
 
 const API_BASE = document.body.dataset.api;
 const LESSON_ID = document.body.dataset.lesson;
+const AI_ENABLED = document.body.dataset.ai === '1';
 
 // Grund-Styling für die Vorschau, damit sie zum dunklen Theme passt
 const PREVIEW_BASE = `<style>
@@ -152,11 +153,46 @@ function bumpLessonProgress() {
     counter.textContent = document.querySelectorAll('.task.done').length;
 }
 
-// Schreibt eine Rückmeldung unter die Aufgabe
+// Schreibt eine Rückmeldung unter die Aufgabe.
+// Bei einer falschen Antwort wird zusätzlich der KI-Tutor angeboten.
 function showFeedback(taskElement, state, text) {
     const feedback = taskElement.querySelector('[data-feedback]');
     feedback.className = 'feedback ' + state;
     feedback.textContent = text;
+
+    if (state === 'wrong' && AI_ENABLED) {
+        taskElement.querySelector('.ai-help').hidden = false;
+    }
+}
+
+// Fragt den KI-Tutor, warum die Antwort noch nicht stimmt
+async function askAiTutor(taskElement, form) {
+    const button = taskElement.querySelector('.ai-button');
+    const answerBox = taskElement.querySelector('.ai-answer');
+
+    button.disabled = true;
+    button.textContent = '🤖 denkt nach …';
+
+    let data;
+    try {
+        const response = await fetch(API_BASE + 'explain-error.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                lesson_id: LESSON_ID,
+                task_id: form.dataset.taskId,
+                answer: form.querySelector('textarea').value,
+            }),
+        });
+        data = await response.json();
+    } catch (error) {
+        data = { ok: false, error: 'Der KI-Tutor ist gerade nicht erreichbar.' };
+    }
+
+    answerBox.textContent = data.ok ? data.explanation : '⚠️ ' + data.error;
+    answerBox.hidden = false;
+    button.disabled = false;
+    button.textContent = '🤖 Nochmal erklären';
 }
 
 // ---------------------------------------------------------------------
@@ -188,6 +224,10 @@ document.querySelectorAll('.task-form').forEach(form => {
     } else {
         previewBox.hidden = true;
     }
+
+    // ---- KI-Tutor-Button verkabeln ----
+    const aiButton = task.querySelector('.ai-button');
+    aiButton.addEventListener('click', () => askAiTutor(task, form));
 
     // ---- Absenden: erst lokal prüfen, dann beim Server speichern ----
     form.addEventListener('submit', async event => {

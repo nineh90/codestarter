@@ -431,6 +431,141 @@ a {
     }
 }
 
+/* ---------- KI-Tutor ---------- */
+.btn-ghost {
+    display: inline-block;
+    background: transparent;
+    color: var(--accent-2);
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 1px solid var(--card-soft);
+    border-radius: 999px;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+}
+
+.btn-ghost:hover {
+    border-color: var(--accent-2);
+}
+
+.btn-ghost:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.ai-help {
+    margin-top: 12px;
+}
+
+.ai-answer {
+    margin: 10px 0 0;
+    background: var(--bg);
+    border-left: 3px solid var(--accent-2);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--text-dim);
+}
+
+/* ---------- Spielwiese: Projekt-Leiste ---------- */
+.playground-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.playground-bar input,
+.playground-bar select,
+.task-form input[type="password"] {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--card-soft);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+}
+
+.playground-bar input:focus,
+.playground-bar select:focus,
+.task-form input[type="password"]:focus {
+    outline: 2px solid var(--accent);
+    border-color: transparent;
+}
+
+.playground-bar .btn {
+    margin-top: 0;
+}
+
+.playground-bar .feedback {
+    margin: 0;
+}
+
+/* ---------- Adminbereich ---------- */
+.admin-head {
+    margin-bottom: 8px;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.admin-table th {
+    text-align: left;
+    color: var(--text-dim);
+    font-weight: 600;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--card-soft);
+}
+
+.admin-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--card-soft);
+}
+
+.task h2 {
+    margin: 0 0 12px;
+    font-size: 1.1rem;
+}
+
+.stat-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 6px 0;
+    font-size: 0.85rem;
+}
+
+.stat-day {
+    flex-shrink: 0;
+    width: 90px;
+    color: var(--text-dim);
+}
+
+.stat-bar {
+    flex-grow: 1;
+    height: 12px;
+    border-radius: 999px;
+    background: var(--bg);
+    overflow: hidden;
+}
+
+.stat-bar-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+.stat-value {
+    flex-shrink: 0;
+    width: 160px;
+    color: var(--text-dim);
+}
+
 /* ---------- Toast (Level-Up-Meldung) ---------- */
 .toast {
     position: fixed;

@@ -50,6 +50,7 @@ render_page_start(
     '../',
     $total_xp,
     'data-api="../api/" data-lesson="' . h($lesson['id']) . '"'
+    . ' data-ai="' . (ai_is_configured() ? '1' : '0') . '"'
 );
 ?>
 <main class="container">
@@ -98,6 +99,13 @@ render_page_start(
                 <?php if ($state === 'ok'): ?>✅ Stark! Aufgabe geschafft.<?php endif; ?>
                 <?php if ($state === 'wrong'): ?>❌ Noch nicht ganz — probier's nochmal oder schau in den Tipp.<?php endif; ?>
             </p>
+
+            <!-- KI-Tutor: wird von lesson.js eingeblendet, wenn eine Antwort
+                 falsch war und der Tutor in config.local.php eingerichtet ist -->
+            <div class="ai-help" hidden>
+                <button type="button" class="btn-ghost ai-button">🤖 Erklär mir das</button>
+                <p class="ai-answer" hidden></p>
+            </div>
 
             <div class="preview">
                 <span class="preview-label">Live-Vorschau</span>

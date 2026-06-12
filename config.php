@@ -12,6 +12,27 @@ error_reporting(E_ALL);
 // Pfad zur SQLite-Datei (lokal). Auf dem VPS wird hier später MySQL konfiguriert.
 define('DB_PATH', __DIR__ . '/data/progress.db');
 
+// Geheime, lokale Einstellungen laden (KI-API-Key, Admin-Passwort).
+// Die Datei ist gitignored — Vorlage: config.local.example.php
+if (is_file(__DIR__ . '/config.local.php')) {
+    require __DIR__ . '/config.local.php';
+}
+
+// Falls config.local.php fehlt oder Werte nicht setzt: leere Standardwerte.
+// Die Features (KI-Tutor, Admin) schalten sich dann einfach freundlich ab.
+if (!defined('AI_API_URL')) {
+    define('AI_API_URL', '');
+}
+if (!defined('AI_API_KEY')) {
+    define('AI_API_KEY', '');
+}
+if (!defined('AI_MODEL')) {
+    define('AI_MODEL', '');
+}
+if (!defined('ADMIN_PASSWORD')) {
+    define('ADMIN_PASSWORD', '');
+}
+
 // Cookie, über das wir Jonas ohne Login wiedererkennen
 define('USER_COOKIE', 'lab_user');
 define('COOKIE_LIFETIME', 60 * 60 * 24 * 365); // 1 Jahr
@@ -71,6 +92,14 @@ function get_db(): PDO
         xp           INTEGER NOT NULL,
         completed_at TEXT NOT NULL,
         UNIQUE (user_id, task_id)
+    )');
+    $db->exec('CREATE TABLE IF NOT EXISTS projects (
+        id         INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id    INTEGER NOT NULL,
+        name       TEXT NOT NULL,
+        code       TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
     )');
 
     return $db;
@@ -270,6 +299,54 @@ function check_answer(array $task, string $answer): bool
 }
 
 // ---------------------------------------------------------------------
+// KI-Tutor
+// ---------------------------------------------------------------------
+
+/**
+ * Ist der KI-Tutor einsatzbereit? (Key, URL und Modell in config.local.php)
+ */
+function ai_is_configured(): bool
+{
+    return AI_API_KEY !== '' && AI_API_URL !== '' && AI_MODEL !== '';
+}
+
+/**
+ * Stellt dem KI-Tutor eine Frage und gibt seine Antwort zurück.
+ * Spricht jeden OpenAI-kompatiblen Chat-Endpunkt an (Gemini, OpenAI, ...) —
+ * welcher genau, steht in config.local.php.
+ * Gibt null zurück, wenn etwas schiefgeht (Timeout, falscher Key, ...).
+ */
+function ask_ai_tutor(string $system_prompt, string $user_message): ?string
+{
+    $payload = json_encode([
+        'model'       => AI_MODEL,
+        'messages'    => [
+            ['role' => 'system', 'content' => $system_prompt],
+            ['role' => 'user', 'content' => $user_message],
+        ],
+        'max_tokens'  => 300,
+        'temperature' => 0.4,
+    ], JSON_UNESCAPED_UNICODE);
+
+    $context = stream_context_create(['http' => [
+        'method'        => 'POST',
+        'header'        => "Content-Type: application/json\r\n"
+                         . 'Authorization: Bearer ' . AI_API_KEY . "\r\n",
+        'content'       => $payload,
+        'timeout'       => 20,
+        'ignore_errors' => true, // auch bei Fehler-Status die Antwort lesen
+    ]]);
+
+    $response = @file_get_contents(AI_API_URL, false, $context);
+    if ($response === false) {
+        return null;
+    }
+
+    $data = json_decode($response, true);
+    return $data['choices'][0]['message']['content'] ?? null;
+}
+
+// ---------------------------------------------------------------------
 // HTML-Ausgabe
 // ---------------------------------------------------------------------
 
@@ -284,11 +361,12 @@ function h(string $text): string
 /**
  * Gibt den Seitenanfang aus: <head>, Topbar mit Logo und XP-Anzeige.
  * $base_path ist der relative Weg zum Projektroot ('' oder '../').
+ * $total_xp = null blendet die XP-Anzeige aus (z. B. im Adminbereich).
  * $body_attrs sind fertige (bereits escapte) Attribute fürs <body>-Tag.
  */
-function render_page_start(string $title, string $base_path, int $total_xp, string $body_attrs = ''): void
+function render_page_start(string $title, string $base_path, ?int $total_xp, string $body_attrs = ''): void
 {
-    $stats = xp_stats($total_xp);
+    $stats = $total_xp !== null ? xp_stats($total_xp) : null;
     ?>
 <!doctype html>
 <html lang="de">
@@ -301,6 +379,7 @@ function render_page_start(string $title, string $base_path, int $total_xp, stri
 <body <?= $body_attrs ?>>
 <header class="topbar">
     <a class="logo" href="<?= h($base_path) ?>index.php">⚡ Jonas Coding Lab</a>
+    <?php if ($stats !== null): ?>
     <div class="xp-pill">
         <span class="level-label" id="level-pill">Lv. <?= $stats['level'] ?> · <?= h($stats['name']) ?></span>
         <span class="xp-bar"><!-- width ist dynamisch, deshalb ausnahmsweise inline -->
@@ -308,6 +387,7 @@ function render_page_start(string $title, string $base_path, int $total_xp, stri
         </span>
         <span class="xp-label"><span id="xp-value"><?= $total_xp ?></span> XP</span>
     </div>
+    <?php endif; ?>
 </header>
 <?php
 }

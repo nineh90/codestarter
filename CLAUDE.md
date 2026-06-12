@@ -8,8 +8,8 @@ Entwickelt von Nils gemeinsam mit Claude (Fable 5) als Coding-Partner.
 Ziel: Jonas soll motiviert Webentwicklung lernen — HTML, CSS, JavaScript, später PHP —
 durch sofort sichtbare Ergebnisse, kleine Aufgaben und echte Projekte.
 
-> **Stand (2026-06-11):** Phase 1 (MVP) und Phase 2 sind umgesetzt — siehe Features.
-> Als Nächstes: Phase 3 (KI-Tutor, Adminbereich).
+> **Stand (2026-06-11):** Phase 1–3 sind umgesetzt — siehe Features.
+> Als Nächstes: Backlog-Themen nach Absprache (oder VPS-Deployment).
 
 ---
 
@@ -18,7 +18,7 @@ durch sofort sichtbare Ergebnisse, kleine Aufgaben und echte Projekte.
 - **Backend:** PHP 8.4 (lokal via eingebautem PHP-Server, Produktion auf Hostinger VPS)
 - **Frontend:** HTML, CSS, Vanilla JavaScript
 - **Datenbank:** SQLite (lokal, einfach) → MySQL (VPS, Produktion)
-- **KI-Tutor:** Kostenloses/günstiges Modell (z. B. Gemini Flash, GPT-4o-mini) — wird später eingebaut
+- **KI-Tutor:** beliebiger OpenAI-kompatibler Chat-Endpunkt (z. B. Gemini Flash, GPT-4o-mini) — URL/Key/Modell in `config.local.php`, ohne Konfiguration blendet sich das Feature einfach aus
 - **Keine Frameworks** — alles von Hand, damit Jonas versteht was passiert
 
 ---
@@ -51,8 +51,9 @@ Die Struktur liegt direkt im Projektroot (`codestarter/`):
 ```
 codestarter/
 ├── index.php              # Startseite / Dashboard
-├── playground.php         # Spielwiese: freier Editor + Live-Vorschau, ohne XP
-├── config.php             # DB-Verbindung, Helfer (XP, Lektionen, Rendering)
+├── playground.php         # Spielwiese: freier Editor + Live-Vorschau, Projekte speicherbar
+├── config.php             # DB-Verbindung, Helfer (XP, Lektionen, KI, Rendering)
+├── config.local.example.php # Vorlage für config.local.php (KI-Key, Admin-Passwort — gitignored)
 ├── .htaccess              # URL-Routing (mod_rewrite) — kommt später, erst auf dem VPS relevant
 │
 ├── /lessons/              # Lerneinheiten: je Datei nur ein $lesson-Array
@@ -64,15 +65,18 @@ codestarter/
 │
 ├── /api/                  # AJAX-Endpunkte (XP speichern, Fortschritt etc.)
 │   ├── save-progress.php  # prüft Antworten serverseitig nochmal (Anti-Schummel)
-│   └── get-progress.php
+│   ├── get-progress.php
+│   ├── explain-error.php  # KI-Tutor: erklärt falsche Antworten (ohne Lösung)
+│   ├── save-project.php   # Spielwiesen-Projekte speichern
+│   └── get-projects.php   # Spielwiesen-Projekte auflisten/laden
 │
 ├── /assets/
 │   ├── /css/style.css     # Dark Theme, alle Farben als CSS-Variablen
 │   ├── /js/               # editor.js, lesson.js, playground.js
 │   └── /img/
 │
-├── /admin/                # Später: Adminbereich für Nils
-│   └── index.php
+├── /admin/                # Adminbereich für Nils (read-only, Passwort in config.local.php)
+│   └── index.php          # Login + Fortschritt/Statistik, nirgends verlinkt
 │
 └── /data/                 # SQLite-Datei (lokal, gitignored)
     └── progress.db
@@ -130,10 +134,10 @@ in `config.php` eintragen — mehr ist nicht nötig.
 - [x] Kleine Challenges / Mini-Projekte (eigene Lerneinheit + freie Spielwiese)
 
 ### Phase 3
-- [ ] KI-Tutor einbauen (günstiges Modell, erklärt Fehler)
-- [ ] Adminbereich für Nils (Inhalte pflegen, Fortschritt sehen)
-- [ ] Lernstatistiken
-- [ ] Eigene Projekte von Jonas speicherbar
+- [x] KI-Tutor einbauen (günstiges Modell, erklärt Fehler — Button „🤖 Erklär mir das" bei falschen Antworten, verrät nie die Lösung)
+- [x] Adminbereich für Nils (Fortschritt sehen — bewusst read-only: Inhalte werden direkt in den Lektionsdateien gepflegt, kein Web-CMS)
+- [x] Lernstatistiken (Aktivität pro Tag, Fortschritt je Lektion, letzte Abschlüsse)
+- [x] Eigene Projekte von Jonas speicherbar (Spielwiese: speichern, laden, weiterbauen)
 
 ---
 
