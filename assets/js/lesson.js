@@ -11,7 +11,6 @@
 
 const API_BASE = document.body.dataset.api;
 const LESSON_ID = document.body.dataset.lesson;
-const AI_ENABLED = document.body.dataset.ai === '1';
 
 // Grund-Styling für die Vorschau, damit sie zum dunklen Theme passt
 const PREVIEW_BASE = `<style>
@@ -148,21 +147,21 @@ function updateXpHeader(data) {
 }
 
 // Zählt die "x von y geschafft"-Anzeige der Lektion hoch
+// und füllt den Fortschrittsbalken der Lektion entsprechend.
 function bumpLessonProgress() {
-    const counter = document.getElementById('lesson-done-count');
-    counter.textContent = document.querySelectorAll('.task.done').length;
+    const done = document.querySelectorAll('.task.done:not(.intro-card)').length;
+    const total = parseInt(document.getElementById('lesson-progress').dataset.total, 10);
+
+    document.getElementById('lesson-done-count').textContent = done;
+    document.getElementById('lesson-bar-fill').style.width =
+        Math.round(done / total * 100) + '%';
 }
 
 // Schreibt eine Rückmeldung unter die Aufgabe.
-// Bei einer falschen Antwort wird zusätzlich der KI-Tutor angeboten.
 function showFeedback(taskElement, state, text) {
     const feedback = taskElement.querySelector('[data-feedback]');
     feedback.className = 'feedback ' + state;
     feedback.textContent = text;
-
-    if (state === 'wrong' && AI_ENABLED) {
-        taskElement.querySelector('.ai-help').hidden = false;
-    }
 }
 
 // Fragt den KI-Tutor, warum die Antwort noch nicht stimmt
@@ -267,6 +266,7 @@ document.querySelectorAll('.task-form').forEach(form => {
         task.classList.add('done');
         task.querySelector('.xp-badge').textContent = '✓ erledigt';
         bumpLessonProgress();
+        refreshCardNav(); // schaltet den "Weiter"-Button frei
 
         if (data.already_done) {
             showFeedback(task, 'ok', '✅ Richtig! Die Aufgabe hattest du aber schon geschafft.');
@@ -280,3 +280,85 @@ document.querySelectorAll('.task-form').forEach(form => {
         }
     });
 });
+
+// ---------------------------------------------------------------------
+// Karten-Modus: immer nur EINE Karte zeigen (Intro oder Aufgabe).
+// "Weiter" gibt es erst, wenn die aktuelle Aufgabe gelöst ist —
+// zurückblättern geht jederzeit. Ohne JavaScript stehen einfach
+// alle Karten untereinander (dieser Block läuft dann nie).
+// ---------------------------------------------------------------------
+const cards = [...document.querySelectorAll('[data-card]')];
+const dots = [...document.querySelectorAll('#stepper .step-dot')];
+const prevButton = document.getElementById('prev-card');
+const nextButton = document.getElementById('next-card');
+const finishLink = document.getElementById('finish-link');
+const cardPos = document.getElementById('card-pos');
+
+let currentCard = 0;
+
+// Eine Karte gilt als "geschafft", wenn sie keine Aufgabe ist (Intro)
+// oder die Aufgabe gelöst wurde.
+function isCardDone(card) {
+    return !card.querySelector('.task-form') || card.classList.contains('done');
+}
+
+// Bis zu welcher Karte darf Jonas vorblättern? Bis zur ersten
+// ungelösten Aufgabe — ist alles gelöst, sind alle Karten frei.
+function furthestCard() {
+    const firstOpen = cards.findIndex(card => !isCardDone(card));
+    return firstOpen === -1 ? cards.length - 1 : firstOpen;
+}
+
+// Bringt Punkte-Leiste und Zurück/Weiter auf den aktuellen Stand
+function refreshCardNav() {
+    const furthest = furthestCard();
+
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentCard);
+        dot.classList.toggle('done', isCardDone(cards[index]) && cards[index].querySelector('.task-form') !== null);
+        dot.classList.toggle('locked', index > furthest);
+        dot.disabled = index > furthest;
+    });
+
+    prevButton.disabled = currentCard === 0;
+
+    const isLast = currentCard === cards.length - 1;
+    nextButton.hidden = isLast;
+    nextButton.disabled = !isCardDone(cards[currentCard]);
+    finishLink.hidden = !(isLast && isCardDone(cards[currentCard]));
+
+    cardPos.textContent = (currentCard + 1) + ' / ' + cards.length;
+}
+
+// Zeigt die Karte mit der angegebenen Nummer an
+function showCard(index, scroll = true) {
+    currentCard = index;
+    cards.forEach((card, i) => card.classList.toggle('active', i === index));
+    refreshCardNav();
+
+    if (scroll) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+if (cards.length > 1) {
+    // Karten-Modus einschalten: CSS blendet alle Karten außer .active aus
+    document.querySelector('main.container').classList.add('cards-mode');
+    document.getElementById('stepper').hidden = false;
+    document.getElementById('card-nav').hidden = false;
+
+    prevButton.addEventListener('click', () => showCard(currentCard - 1));
+    nextButton.addEventListener('click', () => showCard(currentCard + 1));
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            if (!dot.disabled) {
+                showCard(index);
+            }
+        });
+    });
+
+    // Einstieg: Wer schon Aufgaben gelöst hat, landet direkt bei der
+    // nächsten offenen — alle anderen starten beim Intro.
+    const anyTaskDone = cards.some(card => card.classList.contains('done'));
+    showCard(anyTaskDone ? furthestCard() : 0, false);
+}

@@ -14,6 +14,23 @@ $lesson = [
     'title'       => 'CSS Basics',
     'icon'        => '🎨',
     'description' => 'CSS macht aus grauen Seiten echte Hingucker. Du stylst hier eine Demo-Box — jede Änderung siehst du sofort in der Vorschau.',
+
+    // Die Intro-Karte wird als erste Karte angezeigt und erklärt,
+    // worum es in dieser Lektion überhaupt geht.
+    'intro'       => [
+        'heading'    => 'Was ist CSS?',
+        'paragraphs' => [
+            'CSS steht für Cascading Style Sheets — die Sprache fürs Aussehen. HTML baut das Skelett, CSS zieht ihm etwas Schickes an: Farben, Schriften, Abstände, runde Ecken, sogar Animationen.',
+            'Das Grundmuster ist immer gleich: eigenschaft: wert; — zum Beispiel color: red; für rote Schrift. Der Doppelpunkt trennt, das Semikolon beendet. Mehr Syntax brauchst du am Anfang nicht.',
+            'Auch diese Lernseite ist komplett mit CSS gestylt: das dunkle Theme, die Karten, das Lila — alles nur CSS. In den nächsten Karten stylst du selbst eine Demo-Box.',
+        ],
+        'facts'      => [
+            'Es gibt über 500 CSS-Eigenschaften — aber mit etwa 20 baust du schon richtig gute Seiten.',
+            'Farben kannst du als Name (red), Hex-Code (#7c6cf7) oder rgb(...) schreiben.',
+            'CSS verzeiht Fehler: Was der Browser nicht versteht, ignoriert er einfach stillschweigend.',
+        ],
+    ],
+
     'tasks'       => [
         [
             'id'          => 'css-1-color',

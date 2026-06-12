@@ -251,6 +251,123 @@ a {
     font-size: 0.9rem;
 }
 
+.lesson-bar {
+    margin-top: 4px;
+}
+
+/* ---------- Schritt-Navigation (Karten-Modus) ---------- */
+.stepper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 20px 0 4px;
+}
+
+.step-dot {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid var(--card-soft);
+    background: var(--card);
+    color: var(--text-dim);
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color 0.15s ease, transform 0.1s ease;
+}
+
+.step-dot:hover:not(:disabled) {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.step-dot.done {
+    border-color: var(--ok);
+    color: var(--ok);
+}
+
+.step-dot.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+.step-dot.locked {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Karten-Modus: lesson.js setzt .cards-mode aufs <main> — dann ist
+   immer nur die aktive Karte sichtbar. Ohne JS: alle untereinander. */
+.cards-mode [data-card] {
+    display: none;
+}
+
+.cards-mode [data-card].active {
+    display: block;
+    animation: card-in 0.3s ease;
+}
+
+@keyframes card-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ---------- Intro-Karte ("Was ist HTML?") ---------- */
+.intro-card {
+    border-left-color: var(--accent-2);
+}
+
+.facts-label {
+    margin: 16px 0 6px;
+    font-weight: 600;
+}
+
+.facts {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--text-dim);
+}
+
+.facts li {
+    margin: 6px 0;
+}
+
+/* ---------- Zurück/Weiter unter den Karten ---------- */
+.card-nav {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 22px;
+}
+
+.card-nav .btn,
+.card-nav .btn-ghost {
+    margin-top: 0;
+}
+
+.card-pos {
+    flex-grow: 1;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+}
+
+.btn:disabled,
+.btn-ghost:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
 /* ---------- Aufgaben-Karten ---------- */
 .task {
     background: var(--card);

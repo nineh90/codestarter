@@ -47,21 +47,24 @@ if ($task === null) {
 }
 
 // Sehr lange Eingaben kappen — schützt vor Unsinn und spart API-Kosten
-$answer = mb_substr($answer, 0, 2000);
+$answer = trim(mb_substr($answer, 0, 2000));
 
 $system_prompt =
     'Du bist ein freundlicher Coding-Tutor für Jonas, 17 Jahre alt, Programmieranfänger. '
     . 'Antworte auf Deutsch, locker und auf Augenhöhe, maximal 4 kurze Sätze. '
     . 'Erkläre, was an seiner Lösung noch nicht passt, und gib einen Schubs in die '
-    . 'richtige Richtung. Verrate NIEMALS die komplette Lösung — Jonas soll selbst '
-    . 'draufkommen. Fehler sind okay, mach ihm Mut.';
+    . 'richtige Richtung. Hat Jonas noch gar nichts geschrieben, erkläre die Aufgabe '
+    . 'in eigenen Worten und gib ihm einen Startpunkt. Verrate NIEMALS die komplette '
+    . 'Lösung — Jonas soll selbst draufkommen. Fehler sind okay, mach ihm Mut.';
 
 $user_message =
     "Aufgabe: " . $task['instruction'] . "\n"
     . "Theorie dazu: " . $task['theory'] . "\n"
     . "Die Prüfung erwartet, dass diese Bausteine vorkommen (nur für dich, nicht wörtlich verraten): "
     . implode(', ', $task['check']['values'] ?? []) . "\n\n"
-    . "Jonas' bisherige Antwort:\n" . $answer;
+    . ($answer === ''
+        ? "Jonas hat noch nichts geschrieben — er möchte die Aufgabe erklärt bekommen."
+        : "Jonas' bisherige Antwort:\n" . $answer);
 
 $explanation = ask_ai_tutor($system_prompt, $user_message);
 

@@ -3,6 +3,13 @@
 // _lesson-template.php — Gemeinsames Grundgerüst für ALLE Lektionsseiten.
 // Erwartet, dass die Lektionsdatei vorher das Array $lesson definiert hat.
 // Lektionsinhalte gehören NICHT hierher, nur Darstellung und Ablauf.
+//
+// Aufbau der Seite:
+//   - Intro-Karte (erklärt, was z. B. HTML überhaupt ist — $lesson['intro'])
+//   - eine Karte pro Aufgabe
+// Mit JavaScript zeigt lesson.js immer nur EINE Karte ("Karten-Modus")
+// und blendet die Schritt-Navigation ein. Ohne JavaScript stehen alle
+// Karten untereinander — so funktioniert die Seite trotzdem.
 // =====================================================================
 
 require_once __DIR__ . '/../config.php';
@@ -44,6 +51,10 @@ $completed = get_completed_task_ids($db, $user_id);
 // Wie viele Aufgaben DIESER Lektion sind geschafft?
 $lesson_task_ids = array_column($lesson['tasks'], 'id');
 $done_count = count(array_intersect($lesson_task_ids, $completed));
+$task_count = count($lesson['tasks']);
+$percent_done = $task_count > 0 ? (int) round($done_count / $task_count * 100) : 0;
+
+$has_intro = !empty($lesson['intro']);
 
 render_page_start(
     $lesson['title'],
@@ -59,17 +70,50 @@ render_page_start(
     <header class="lesson-head">
         <h1><?= h($lesson['icon']) ?> <?= h($lesson['title']) ?></h1>
         <p><?= h($lesson['description']) ?></p>
-        <p class="lesson-progress" id="lesson-progress" data-total="<?= count($lesson['tasks']) ?>">
-            <span id="lesson-done-count"><?= $done_count ?></span> von <?= count($lesson['tasks']) ?> Aufgaben geschafft
+        <p class="lesson-progress" id="lesson-progress" data-total="<?= $task_count ?>">
+            <span id="lesson-done-count"><?= $done_count ?></span> von <?= $task_count ?> Aufgaben geschafft
         </p>
+        <div class="card-bar lesson-bar"><!-- width ist dynamisch, deshalb ausnahmsweise inline -->
+            <span class="card-bar-fill" id="lesson-bar-fill" style="width: <?= $percent_done ?>%"></span>
+        </div>
     </header>
+
+    <!-- Schritt-Navigation: lesson.js blendet sie ein. Die Reihenfolge der
+         Punkte entspricht 1:1 der Reihenfolge der Karten darunter. -->
+    <nav class="stepper" id="stepper" hidden aria-label="Lektions-Schritte">
+        <?php if ($has_intro): ?>
+            <button type="button" class="step-dot" title="Intro">📖</button>
+        <?php endif; ?>
+        <?php foreach ($lesson['tasks'] as $i => $task): ?>
+            <button type="button"
+                    class="step-dot<?= in_array($task['id'], $completed, true) ? ' done' : '' ?>"
+                    title="<?= h($task['title']) ?>"><?= $i + 1 ?></button>
+        <?php endforeach; ?>
+    </nav>
+
+    <?php if ($has_intro): ?>
+        <section class="task intro-card" data-card>
+            <h2><?= h($lesson['intro']['heading']) ?></h2>
+            <?php foreach ($lesson['intro']['paragraphs'] as $paragraph): ?>
+                <p class="theory"><?= h($paragraph) ?></p>
+            <?php endforeach; ?>
+            <?php if (!empty($lesson['intro']['facts'])): ?>
+                <p class="facts-label">💡 Gut zu wissen:</p>
+                <ul class="facts">
+                    <?php foreach ($lesson['intro']['facts'] as $fact): ?>
+                        <li><?= h($fact) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+        </section>
+    <?php endif; ?>
 
     <?php foreach ($lesson['tasks'] as $i => $task): ?>
         <?php
         $is_done = in_array($task['id'], $completed, true);
         $state = $feedback[$task['id']] ?? null;
         ?>
-        <article class="task<?= $is_done ? ' done' : '' ?>" id="task-<?= h($task['id']) ?>">
+        <article class="task<?= $is_done ? ' done' : '' ?>" id="task-<?= h($task['id']) ?>" data-card>
             <header class="task-head">
                 <span class="task-number"><?= $i + 1 ?></span>
                 <h2><?= h($task['title']) ?></h2>
@@ -100,9 +144,9 @@ render_page_start(
                 <?php if ($state === 'wrong'): ?>❌ Noch nicht ganz — probier's nochmal oder schau in den Tipp.<?php endif; ?>
             </p>
 
-            <!-- KI-Tutor: wird von lesson.js eingeblendet, wenn eine Antwort
-                 falsch war und der Tutor in config.local.php eingerichtet ist -->
-            <div class="ai-help" hidden>
+            <!-- KI-Tutor: immer verfügbar — erklärt die Aufgabe oder warum
+                 die bisherige Antwort noch nicht passt (verrät nie die Lösung) -->
+            <div class="ai-help"<?= ai_is_configured() ? '' : ' hidden' ?>>
                 <button type="button" class="btn-ghost ai-button">🤖 Erklär mir das</button>
                 <p class="ai-answer" hidden></p>
             </div>
@@ -114,5 +158,13 @@ render_page_start(
             </div>
         </article>
     <?php endforeach; ?>
+
+    <!-- Zurück/Weiter unter der aktiven Karte — lesson.js blendet das ein -->
+    <div class="card-nav" id="card-nav" hidden>
+        <button type="button" class="btn-ghost" id="prev-card">← Zurück</button>
+        <span class="card-pos" id="card-pos"></span>
+        <button type="button" class="btn" id="next-card">Weiter →</button>
+        <a class="btn" id="finish-link" href="../index.php" hidden>Zur Übersicht 🎉</a>
+    </div>
 </main>
 <?php render_page_end('../', ['editor.js', 'lesson.js']); ?>

@@ -22,6 +22,23 @@ $lesson = [
     'title'       => 'HTML Basics',
     'icon'        => '🌐',
     'description' => 'HTML ist das Skelett jeder Webseite. Hier baust du deine ersten eigenen Bausteine — und siehst sofort, was passiert.',
+
+    // Die Intro-Karte wird als erste Karte angezeigt und erklärt,
+    // worum es in dieser Lektion überhaupt geht.
+    'intro'       => [
+        'heading'    => 'Was ist HTML eigentlich?',
+        'paragraphs' => [
+            'HTML steht für HyperText Markup Language — die Sprache, aus der jede Webseite der Welt gebaut ist. Egal ob YouTube, Twitch oder Google: Wenn du tief genug gräbst, findest du immer HTML.',
+            'HTML ist keine Programmiersprache, sondern eine Struktur-Sprache: Du sagst dem Browser, WAS etwas ist — eine Überschrift, ein Absatz, ein Bild, ein Link. Wie das Ganze dann aussieht, regelt später CSS.',
+            'Die Bausteine von HTML heißen Tags. Ein Tag ist wie eine Verpackung: <h1>Hallo</h1> sagt dem Browser "das hier ist eine große Überschrift". In den nächsten Karten lernst du die wichtigsten Tags kennen.',
+        ],
+        'facts'      => [
+            'Tags funktionieren fast immer paarweise: <p> öffnet, </p> schließt — der Schrägstrich macht den Unterschied.',
+            'Der Browser liest dein HTML von oben nach unten und baut daraus die Seite.',
+            'Tippfehler crashen nichts — der Browser zeigt einfach an, was er versteht. Probieren ist also immer erlaubt!',
+        ],
+    ],
+
     'tasks'       => [
         [
             'id'          => 'html-1-heading',

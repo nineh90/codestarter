@@ -15,6 +15,22 @@ $lesson = [
     'title'       => 'Mini-Challenges',
     'icon'        => '🚀',
     'description' => 'Zeit für echte Projekte: Hier kombinierst du HTML, CSS und JavaScript zu kleinen Seiten, die wirklich was können.',
+
+    // Die Intro-Karte wird als erste Karte angezeigt und erklärt,
+    // worum es in dieser Lektion überhaupt geht.
+    'intro'       => [
+        'heading'    => 'Alles zusammen!',
+        'paragraphs' => [
+            'Jetzt kommt der beste Teil: HTML, CSS und JavaScript arbeiten zusammen — genau so entstehen echte Webseiten. HTML liefert die Struktur, CSS das Aussehen, JavaScript das Verhalten.',
+            'Die Challenges hier sind größer als die Aufgaben vorher. Nimm dir Zeit, probier in der Vorschau herum — und wenn du festhängst: Tipp aufklappen oder den KI-Tutor fragen.',
+        ],
+        'facts'      => [
+            'Jede Webseite der Welt besteht aus genau diesen drei Bausteinen.',
+            'Profis googeln ständig — niemand kennt alle Tags und Befehle auswendig.',
+            'Wenn etwas nicht klappt: kleiner anfangen, Stück für Stück erweitern. So arbeiten echte Entwickler auch.',
+        ],
+    ],
+
     'tasks'       => [
         [
             'id'          => 'ch-1-card',

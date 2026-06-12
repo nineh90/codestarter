@@ -14,6 +14,24 @@ $lesson = [
     'title'       => 'JavaScript Basics',
     'icon'        => '⚡',
     'description' => 'Mit JavaScript wird deine Seite lebendig: Hier schreibst du echte Programme — und die Vorschau führt sie sofort aus.',
+
+    // Die Intro-Karte wird als erste Karte angezeigt und erklärt,
+    // worum es in dieser Lektion überhaupt geht.
+    'intro'       => [
+        'heading'    => 'Was ist JavaScript?',
+        'paragraphs' => [
+            'JavaScript ist die Programmiersprache des Browsers — und damit das erste Mal, dass du dem Computer echte Befehle gibst. HTML beschreibt, CSS gestaltet, JavaScript MACHT.',
+            'Alles Interaktive im Web läuft über JavaScript: Klicks, Eingaben, Berechnungen, Spiele. Auch das XP-System dieser Lernseite ist mit JavaScript gebaut.',
+            'In dieser Lektion schreibst du deine ersten Programme. Die Vorschau führt deinen Code sofort aus und zeigt dir die Ausgabe — wie eine kleine eingebaute Konsole.',
+        ],
+        'facts'      => [
+            'JavaScript hat mit Java nichts zu tun — der ähnliche Name war 1995 ein Marketing-Trick.',
+            'Dein Code läuft Zeile für Zeile von oben nach unten.',
+            'console.log(...) ist dein bester Freund: Damit schaust du in dein Programm hinein.',
+            'Fehlermeldungen sind keine Strafe, sondern Hinweise — lies sie, sie sagen dir fast immer, wo es hakt.',
+        ],
+    ],
+
     'tasks'       => [
         [
             'id'          => 'js-1-console',

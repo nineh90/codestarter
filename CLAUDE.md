@@ -8,7 +8,10 @@ Entwickelt von Nils gemeinsam mit Claude (Fable 5) als Coding-Partner.
 Ziel: Jonas soll motiviert Webentwicklung lernen — HTML, CSS, JavaScript, später PHP —
 durch sofort sichtbare Ergebnisse, kleine Aufgaben und echte Projekte.
 
-> **Stand (2026-06-11):** Phase 1–3 sind umgesetzt — siehe Features.
+> **Stand (2026-06-12):** Phase 1–3 sind umgesetzt — siehe Features.
+> Lektionen laufen im Karten-Modus: erst eine Intro-Karte („Was ist HTML?"),
+> dann eine Aufgabe pro Karte — Weiter gibt es erst nach dem Lösen.
+> Der KI-Tutor ist konfiguriert und bei jeder Aufgabe verfügbar (nicht nur bei Fehlern).
 > Als Nächstes: Backlog-Themen nach Absprache (oder VPS-Deployment).
 
 ---
@@ -83,8 +86,10 @@ codestarter/
 ```
 
 Neue Lektion anlegen: Datei in `/lessons/` nach dem Muster der bestehenden
-(`$lesson`-Array + Template-Require am Ende) und die ID in `LESSON_IDS`
-in `config.php` eintragen — mehr ist nicht nötig.
+(`$lesson`-Array mit `intro` + `tasks` und Template-Require am Ende) und die
+ID in `LESSON_IDS` in `config.php` eintragen — mehr ist nicht nötig.
+Der `intro`-Block (`heading`, `paragraphs`, `facts`) wird als erste Karte
+angezeigt und erklärt, worum es in der Lektion geht.
 
 ---
 
@@ -158,6 +163,16 @@ in `config.php` eintragen — mehr ist nicht nötig.
 - Änderungen immer inkrementell — eine Sache nach der anderen
 - Vor jeder neuen Phase: kurze Abstimmung was als nächstes kommt
 - Code wird erklärt, nicht nur geliefert — Jonas soll es später lesen können
+
+---
+
+## Geplant (nächste Schritte)
+
+- **Coding-Chatbot:** freier Chat mit dem KI-Tutor direkt in der Lernumgebung —
+  Jonas kann Fragen stellen, nicht nur Fehler erklären lassen
+- **Aufgaben-Pool erweitern + Random-Aufgaben:** mehr Aufgaben je Lektion,
+  die dann zufällig gestellt werden — die Erklär-Option (KI-Tutor) bleibt dabei immer verfügbar
+- Playground und Mini-Challenges optisch ans Karten-Design anpassen
 
 ---
 
