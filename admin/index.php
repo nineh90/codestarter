@@ -12,11 +12,18 @@ require_once __DIR__ . '/../config.php';
 
 session_start();
 
+// Redirect-Ziel: die aktuell aufgerufene URL ohne Query-String.
+// Ein relatives "Location: index.php" wäre falsch, wenn die Seite als
+// /admin (ohne Slash) geöffnet wurde — der eingebaute PHP-Server leitet
+// nicht auf /admin/ um, und der Browser landet dann auf /index.php,
+// also im Nutzerbereich statt im Adminbereich.
+$self_url = strtok($_SERVER['REQUEST_URI'], '?');
+
 // ---- Logout ----
 if (isset($_GET['logout'])) {
     $_SESSION = [];
     session_destroy();
-    header('Location: index.php');
+    header('Location: ' . $self_url);
     exit;
 }
 
@@ -26,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
     // hash_equals vergleicht in konstanter Zeit (kein Timing-Raten möglich)
     if (ADMIN_PASSWORD !== '' && hash_equals(ADMIN_PASSWORD, (string) $_POST['password'])) {
         $_SESSION['is_admin'] = true;
-        header('Location: index.php');
+        header('Location: ' . $self_url);
         exit;
     }
     $login_error = 'Falsches Passwort.';
