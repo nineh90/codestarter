@@ -511,6 +511,10 @@ a {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9rem;
+    /* display:block lässt breite Tabellen (9 Spalten!) auf dem Handy
+       innerhalb der Karte scrollen statt die ganze Seite zu sprengen */
+    display: block;
+    overflow-x: auto;
 }
 
 .admin-table th {
@@ -604,5 +608,34 @@ a {
 
     .task-actions {
         flex-wrap: wrap;
+    }
+
+    /* mind. 16px, sonst zoomt iOS Safari beim Antippen automatisch rein */
+    .task-form textarea,
+    .playground-grid textarea,
+    .playground-bar input,
+    .playground-bar select,
+    .task-form input[type="password"] {
+        font-size: 16px;
+    }
+
+    /* Statistik-Zeilen: feste Breiten passen nicht auf schmale Screens —
+       Wert rutscht unter den Balken statt ihn zusammenzuquetschen */
+    .stat-row {
+        flex-wrap: wrap;
+    }
+
+    .stat-day {
+        width: auto;
+    }
+
+    .stat-bar {
+        flex-basis: 100%;
+        order: 3;
+    }
+
+    .stat-value {
+        width: auto;
+        margin-left: auto;
     }
 }
